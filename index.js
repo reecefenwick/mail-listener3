@@ -101,7 +101,7 @@ function parseUnread() {
                                         callback();
                                     } else {
                                         attachment.path = path.resolve(self.attachmentOptions.directory + attachment.generatedFileName);
-                                        self.emit('attachment', attachment);
+                                        self.emit('attachment', attachment, mail);
                                         callback();
                                     }
                                 });
@@ -118,7 +118,9 @@ function parseUnread() {
                         }
                     });
                     parser.on("attachment", function (attachment) {
-                        self.emit('attachment', attachment);
+                        var args = Array.prototype.slice.call(arguments);
+                        args.unshift('attachment');
+                        self.emit.apply(self, args);
                     });
                     msg.on('body', function (stream, info) {
                         stream.pipe(parser);
